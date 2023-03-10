@@ -33,6 +33,11 @@ public class CharacterController2D : MonoBehaviour
 	public bool invincible = false; //If player can die
 	private bool canMove = true; //If player can move
 
+	//Poderes activados:
+	public bool hasDoubleJump = true;
+	public bool hasDash = true;
+	public bool hasWallJump = true;
+
 	private Animator animator;
 	public ParticleSystem particleJumpUp; //Trail particles
 	public ParticleSystem particleJumpDown; //Explosion particles
@@ -179,11 +184,13 @@ public class CharacterController2D : MonoBehaviour
 				particleJumpDown.Play();
 				particleJumpUp.Play();
 			}
-			else if (!m_Grounded && jump && canDoubleJump && !isWallSliding)
+			//else if (!m_Grounded && jump && canDoubleJump && !isWallSliding)
+			else if (!m_Grounded && jump && canDoubleJump && !isWallSliding && hasDoubleJump)
 			{
 				canDoubleJump = false;
 				m_Rigidbody2D.velocity = new Vector2(m_Rigidbody2D.velocity.x, 0);
-				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce / 1.2f));
+				//m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce / 1.2f));
+				m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 				animator.SetBool("IsDoubleJumping", true);
 				// Esto lo he metido yo
 				particleJumpUp.Play();

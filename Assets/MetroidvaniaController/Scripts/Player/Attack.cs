@@ -11,6 +11,9 @@ public class Attack : MonoBehaviour
 	public Animator animator;
 	public bool canAttack = true;
 	public bool isTimeToCheck = false;
+	public AudioSource audioThrow;
+    public AudioClip laserClip;
+    public float volume=0.5f;
 
 	public GameObject cam;
 
@@ -43,6 +46,8 @@ public class Attack : MonoBehaviour
 			Vector2 direction = new Vector2(transform.localScale.x, 0);
 			throwableWeapon.GetComponent<ThrowableWeapon>().direction = direction; 
 			throwableWeapon.name = "ThrowableWeapon";
+			audioThrow.PlayOneShot(laserClip, volume);
+
 		}
 	}
 
