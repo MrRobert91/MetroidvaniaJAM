@@ -135,17 +135,21 @@ public class CharacterController2D : MonoBehaviour
 		}
 	}
 
-
+	//dash parameter is true when the dash butom is presed
+	//hasDash is a new variable that is true when the dash power is unlocked
+	//canDash is for when its fisicaly posible to make a dash ie: when cool down is completed
 	public void Move(float move, bool jump, bool dash)
 	{
 		if (canMove) {
-			if (dash && canDash && !isWallSliding)
+
+			//if (dash && canDash && !isWallSliding )
+			if (dash && canDash && !isWallSliding && hasDash)
 			{
 				//m_Rigidbody2D.AddForce(new Vector2(transform.localScale.x * m_DashForce, 0f));
 				StartCoroutine(DashCooldown());
 			}
 			// If crouching, check to see if the character can stand up
-			if (isDashing)
+			if (isDashing && hasDash)
 			{
 				m_Rigidbody2D.velocity = new Vector2(transform.localScale.x * m_DashForce, 0);
 			}

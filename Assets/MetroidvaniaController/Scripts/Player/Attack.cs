@@ -10,6 +10,7 @@ public class Attack : MonoBehaviour
 	private Rigidbody2D m_Rigidbody2D;
 	public Animator animator;
 	public bool canAttack = true;
+	public bool canShot = true;
 	public bool isTimeToCheck = false;
 	public AudioSource audioThrow;
     public AudioClip laserClip;
@@ -38,7 +39,7 @@ public class Attack : MonoBehaviour
 			StartCoroutine(AttackCooldown());
 		}
 
-		if (Input.GetKeyDown(KeyCode.V))
+		if (Input.GetKeyDown(KeyCode.V) && canShot)
 		{
 			//GameObject throwableWeapon = Instantiate(throwableObject, transform.position + new Vector3(transform.localScale.x * 0.5f,-0.2f), Quaternion.identity) as GameObject; 
 			GameObject throwableWeapon = Instantiate(throwableObject, attackCheck.position + new Vector3(attackCheck.localScale.x * 0.5f,-0.2f), Quaternion.identity) as GameObject; 
