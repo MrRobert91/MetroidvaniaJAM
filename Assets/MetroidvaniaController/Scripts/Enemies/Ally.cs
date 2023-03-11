@@ -35,16 +35,23 @@ public class Ally : MonoBehaviour
 	private bool endDecision = false;
 	private Animator anim;
 
+
+	public float awakeDistance = 20;
+	
+
 	void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		attackCheck = transform.Find("AttackCheck").transform;
 		anim = GetComponent<Animator>();
+
 	}
 
 	// Update is called once per frame
 	void FixedUpdate()
 	{
+		Debug.Log("enemy: " + enemy.name);
+
 
 		if (life <= 0)
 		{
@@ -53,14 +60,28 @@ public class Ally : MonoBehaviour
 
 		else if (enemy != null) 
 		{
+			distToPlayer = enemy.transform.position.x - transform.position.x;
+			distToPlayerY = enemy.transform.position.y - transform.position.y;
+
 			if (isDashing)
 			{
 				m_Rigidbody2D.velocity = new Vector2(transform.localScale.x * m_DashForce, 0);
 			}
-			else if (!isHitted)
+			else if (!isHitted && Mathf.Abs(distToPlayer) < awakeDistance)
+			//else if (!isHitted && Mathf.Abs(distToPlayer) < awakeDistance)
+			
 			{
-				distToPlayer = enemy.transform.position.x - transform.position.x;
-				distToPlayerY = enemy.transform.position.y - transform.position.y;
+				// distToPlayer = enemy.transform.position.x - transform.position.x;
+				// distToPlayerY = enemy.transform.position.y - transform.position.y;
+
+
+
+				Debug.Log("distToPlayer: " + distToPlayer);
+				Debug.Log("distToPlayerY: " + distToPlayerY);
+
+				Debug.Log("Mathf.Abs(distToPlayer): " + Mathf.Abs(distToPlayer));
+
+				Debug.Log("-----------------");
 
 				if (Mathf.Abs(distToPlayer) < 0.25f)
 				{
@@ -93,8 +114,8 @@ public class Ally : MonoBehaviour
 							Run();
 						else if (randomDecision >= 0.4f && randomDecision < 0.6f)
 							Jump();
-						else if (randomDecision >= 0.6f && randomDecision < 0.8f)
-							StartCoroutine(Dash());
+						//else if (randomDecision >= 0.6f && randomDecision < 0.8f)
+						//	StartCoroutine(Dash());
 						else if (randomDecision >= 0.8f && randomDecision < 0.95f)
 							RangeAttack();
 						else
@@ -106,6 +127,7 @@ public class Ally : MonoBehaviour
 					}
 				}
 			}
+			/*
 			else if (isHitted)
 			{
 				if ((distToPlayer > 0f && transform.localScale.x > 0f) || (distToPlayer < 0f && transform.localScale.x < 0f))
@@ -116,10 +138,14 @@ public class Ally : MonoBehaviour
 				else
 					StartCoroutine(Dash());
 			}
+			*/
 		}
 		else 
 		{
-			enemy = GameObject.Find("DrawCharacter");
+			//enemy = GameObject.Find("DrawCharacter");
+
+			enemy = GameObject.Find("robozPlayer");
+
 		}
 
 		if (transform.localScale.x * m_Rigidbody2D.velocity.x > 0 && !m_FacingRight && life > 0)
