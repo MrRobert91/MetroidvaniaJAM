@@ -36,7 +36,10 @@ public class Ally : MonoBehaviour
 	private Animator anim;
 
 
-	public float awakeDistance = 20;
+	public float awakeXDistance = 20;
+	public float awakeYDistance = 10;
+
+	public bool hasMeleeAttack = true;
 	
 
 	void Awake()
@@ -67,7 +70,7 @@ public class Ally : MonoBehaviour
 			{
 				m_Rigidbody2D.velocity = new Vector2(transform.localScale.x * m_DashForce, 0);
 			}
-			else if (!isHitted && Mathf.Abs(distToPlayer) < awakeDistance)
+			else if (!isHitted && Mathf.Abs(distToPlayer) < awakeXDistance && Mathf.Abs(distToPlayerY) < awakeYDistance)
 			//else if (!isHitted && Mathf.Abs(distToPlayer) < awakeDistance)
 			
 			{
@@ -93,7 +96,7 @@ public class Ally : MonoBehaviour
 					GetComponent<Rigidbody2D>().velocity = new Vector2(0f, m_Rigidbody2D.velocity.y);
 					if ((distToPlayer > 0f && transform.localScale.x < 0f) || (distToPlayer < 0f && transform.localScale.x > 0f)) 
 						Flip();
-					if (canAttack)
+					if (canAttack && hasMeleeAttack)
 					{
 						MeleeAttack();
 					}
