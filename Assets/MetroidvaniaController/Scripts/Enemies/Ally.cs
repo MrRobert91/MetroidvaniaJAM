@@ -40,6 +40,7 @@ public class Ally : MonoBehaviour
 	public float awakeYDistance = 10;
 
 	public bool hasMeleeAttack = true;
+	public AudioSource audioHit;
 	
 
 	void Awake()
@@ -53,7 +54,7 @@ public class Ally : MonoBehaviour
 	// Update is called once per frame
 	void FixedUpdate()
 	{
-		Debug.Log("enemy: " + enemy.name);
+		//Debug.Log("enemy: " + enemy.name);
 
 
 		if (life <= 0)
@@ -185,6 +186,7 @@ public class Ally : MonoBehaviour
 			life -= damage;
 			transform.gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0, 0);
 			transform.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(direction * 300f, 100f)); 
+			audioHit.PlayOneShot(audioHit.clip);
 			StartCoroutine(HitTime());
 		}
 	}

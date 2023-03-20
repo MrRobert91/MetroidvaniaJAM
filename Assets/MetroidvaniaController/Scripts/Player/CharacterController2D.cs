@@ -37,6 +37,9 @@ public class CharacterController2D : MonoBehaviour
 	public bool hasDoubleJump = true;
 	public bool hasDash = true;
 	public bool hasWallJump = true;
+	public bool freeze = false;
+
+	
 
 	private Animator animator;
 	public ParticleSystem particleJumpUp; //Trail particles
@@ -55,10 +58,14 @@ public class CharacterController2D : MonoBehaviour
 	[System.Serializable]
 	public class BoolEvent : UnityEvent<bool> { }
 
+	private RigidbodyConstraints2D originalConstraints;
+
 	private void Awake()
 	{
 		m_Rigidbody2D = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
+
+		originalConstraints = m_Rigidbody2D.constraints;
 
 		if (OnFallEvent == null)
 			OnFallEvent = new UnityEvent();
@@ -140,7 +147,12 @@ public class CharacterController2D : MonoBehaviour
 	//canDash is for when its fisicaly posible to make a dash ie: when cool down is completed
 	public void Move(float move, bool jump, bool dash)
 	{
-		if (canMove) {
+		freeze = DialogueManager.GetInstance().dialogueIsPlaying;
+
+		//if (canMove) {
+		if (canMove && !freeze) {
+
+			m_Rigidbody2D.constraints = originalConstraints;
 
 			//if (dash && canDash && !isWallSliding )
 			if (dash && canDash && !isWallSliding && hasDash)
@@ -202,48 +214,51 @@ public class CharacterController2D : MonoBehaviour
 
 			else if (m_IsWall && !m_Grounded)
 			{
-				if (!oldWallSlidding && m_Rigidbody2D.velocity.y < 0 || isDashing)
-				{
-					isWallSliding = true;
-					m_WallCheck.localPosition = new Vector3(-m_WallCheck.localPosition.x, m_WallCheck.localPosition.y, 0);
-					Flip();
-					StartCoroutine(WaitToCheck(0.1f));
-					canDoubleJump = true;
-					animator.SetBool("IsWallSliding", true);
-				}
-				isDashing = false;
+				Debug.Log("WallSliding....");
+				// if (!oldWallSlidding && m_Rigidbody2D.velocity.y < 0 || isDashing)
+				// {
+				// 	isWallSliding = true;
+				// 	m_WallCheck.localPosition = new Vector3(-m_WallCheck.localPosition.x, m_WallCheck.localPosition.y, 0);
+				// 	Flip();
+				// 	StartCoroutine(WaitToCheck(0.1f));
+				// 	canDoubleJump = true;
+				// 	animator.SetBool("IsWallSliding", true);
+				// }
+				// isDashing = false;
 
-				if (isWallSliding)
-				{
-					if (move * transform.localScale.x > 0.1f)
-					{
-						StartCoroutine(WaitToEndSliding());
-					}
-					else 
-					{
-						oldWallSlidding = true;
-						m_Rigidbody2D.velocity = new Vector2(-transform.localScale.x * 2, -5);
-					}
-				}
+				// if (isWallSliding)
+				// {
+				// 	if (move * transform.localScale.x > 0.1f)
+				// 	{
+				// 		StartCoroutine(WaitToEndSliding());
+				// 	}
+				// 	else 
+				// 	{
+				// 		oldWallSlidding = true;
+				// 		m_Rigidbody2D.velocity = new Vector2(-transform.localScale.x * 2, -5);
+				// 	}
+				// }
 
-				if (jump && isWallSliding)
-				{
-					animator.SetBool("IsJumping", true);
-					animator.SetBool("JumpUp", true); 
-					m_Rigidbody2D.velocity = new Vector2(0f, 0f);
-					m_Rigidbody2D.AddForce(new Vector2(transform.localScale.x * m_JumpForce *1.2f, m_JumpForce));
-					jumpWallStartX = transform.position.x;
-					limitVelOnWallJump = true;
-					canDoubleJump = true;
-					isWallSliding = false;
-					animator.SetBool("IsWallSliding", false);
-					oldWallSlidding = false;
-					m_WallCheck.localPosition = new Vector3(Mathf.Abs(m_WallCheck.localPosition.x), m_WallCheck.localPosition.y, 0);
-					canMove = false;
-					// Esto lo he metido yo
-					particleJumpUp.Play();
-				}
-				else if (dash && canDash)
+				// if (jump && isWallSliding)
+				// {
+				// 	animator.SetBool("IsJumping", true);
+				// 	animator.SetBool("JumpUp", true); 
+				// 	m_Rigidbody2D.velocity = new Vector2(0f, 0f);
+				// 	m_Rigidbody2D.AddForce(new Vector2(transform.localScale.x * m_JumpForce *1.2f, m_JumpForce));
+				// 	jumpWallStartX = transform.position.x;
+				// 	limitVelOnWallJump = true;
+				// 	canDoubleJump = true;
+				// 	isWallSliding = false;
+				// 	animator.SetBool("IsWallSliding", false);
+				// 	oldWallSlidding = false;
+				// 	m_WallCheck.localPosition = new Vector3(Mathf.Abs(m_WallCheck.localPosition.x), m_WallCheck.localPosition.y, 0);
+				// 	canMove = false;
+				// 	// Esto lo he metido yo
+				// 	particleJumpUp.Play();
+				// }
+				//else if (dash && canDash)
+
+				if (dash && canDash)
 				{
 					isWallSliding = false;
 					animator.SetBool("IsWallSliding", false);
@@ -261,6 +276,12 @@ public class CharacterController2D : MonoBehaviour
 				m_WallCheck.localPosition = new Vector3(Mathf.Abs(m_WallCheck.localPosition.x), m_WallCheck.localPosition.y, 0);
 				canDoubleJump = true;
 			}
+		}
+		else if (freeze){
+			//Freeze all positions
+            m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionX;
+			m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezePositionY;
+			//return;
 		}
 	}
 

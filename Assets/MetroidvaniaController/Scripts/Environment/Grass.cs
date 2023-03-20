@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Grass : MonoBehaviour
 {
-    public ParticleSystem leafParticle;
+    public ParticleSystem leafParticle; 
 
     void OnTriggerEnter2D(Collider2D col)
     {

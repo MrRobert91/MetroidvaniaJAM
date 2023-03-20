@@ -13,14 +13,30 @@ public class PlayerMovement : MonoBehaviour {
 	bool jump = false;
 	bool dash = false;
 
+	private bool freeze = false;
+
 	//bool dashAxis = false;
 	
 	// Update is called once per frame
 	void Update () {
 
-		horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+		freeze = DialogueManager.GetInstance().dialogueIsPlaying;
 
-		animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+		if (!freeze)
+		{
+			horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+			animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+
+		}
+		else {
+			//m_Rigidbody2D.constraints = RigidbodyConstraints2D.FreezePosition;
+			horizontalMove = 0f;
+			//return;
+		}
+
+		// horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
+		// animator.SetFloat("Speed", Mathf.Abs(horizontalMove));
+
 
 		if (Input.GetKeyDown(KeyCode.Z))
 		{
@@ -60,9 +76,27 @@ public class PlayerMovement : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-		// Move our character
-		controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
-		jump = false;
-		dash = false;
+
+		freeze = DialogueManager.GetInstance().dialogueIsPlaying;
+
+		if (!freeze)
+		{
+			// Move our character
+			controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
+			jump = false;
+			dash = false;
+
+		}
+		else {
+			Debug.Log("freeze move 0");
+			controller.Move(0f, jump, dash);
+			return;
+		}
+
+
+		// // Move our character
+		// controller.Move(horizontalMove * Time.fixedDeltaTime, jump, dash);
+		// jump = false;
+		// dash = false;
 	}
 }

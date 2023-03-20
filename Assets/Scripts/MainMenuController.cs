@@ -22,6 +22,11 @@ public class MainMenuController : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 
+    public void playGameAgain() 
+    {
+        SceneManager.LoadScene(1);
+    }
+
     public void ExitGame() 
     {
         Debug.Log("Exit Game");
